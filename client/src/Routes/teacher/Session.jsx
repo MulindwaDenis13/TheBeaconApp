@@ -22,20 +22,20 @@ class NewSale extends Component {
       message: "Please Wait...",
       messageState: "",
       _content: {},
-      form_visible: false,
+      form_visible: true,
       inputObj: { unit_price: "Select Product", product_id: "" },
-      products: [],
+      courses: [],
       formData: [],
       total: 0,
       discount: 0,
     };
-    this.products();
+    this.courses();
   }
 
-  async products() {
-    const res = (await UsersApi.data("/user/all/products")) || [];
+  async courses() {
+    const res = (await UsersApi.data("/user/admin/classes")) || [];
     if (res) {
-      this.setState({ ...this.state, products: res === "Error" ? [] : res });
+      this.setState({ ...this.state, courses: res === "Error" ? [] : res });
     }
   }
 
@@ -169,109 +169,11 @@ class NewSale extends Component {
           </Alert>
         </Snackbar>
         <input type="checkbox" id="nav-toggle" defaultChecked />
-        <Nav active="sale" />
+        <Nav active="session" />
         <div className="main-content">
           <Header />
           <main>
             <div className="recent-grid">
-              <div className="projects">
-                <form
-                  className="card"
-                  autoComplete="off"
-                  onSubmit={this.handleSubmit}
-                >
-                  <div className="card-header card-header-payments">
-                    <h3 className="class_payment_header">New Sale</h3>
-                    <div className="">
-                      <Button
-                        type="submit"
-                        aria-describedby={this.id}
-                        variant="contained"
-                        color="primary"
-                      >
-                        <span
-                          style={{ fontSize: "17.5px", marginRight: "10px" }}
-                        >
-                          <i className="las la-plus-circle"></i>
-                        </span>
-                        Add
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div>
-                      <div className="inputCtr">
-                        <h4>Product Details</h4>
-                        <div className="inputs_ctr">
-                          <div className="inpts_on_left">
-                            <Autocomplete
-                              id="combo-box-demo"
-                              options={this.state.products}
-                              getOptionLabel={(option) => option.product_name}
-                              onChange={this.handleChangeDrugName}
-                              style={{
-                                width: "75%",
-                                margin: "20px",
-                              }}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  label="Search Product"
-                                  name="product_name"
-                                  variant="outlined"
-                                />
-                              )}
-                            />
-                            <TextField
-                              name="unit_price"
-                              variant="outlined"
-                              value={this.state.inputObj.unit_price}
-                              label="Unit Price"
-                              style={{
-                                width: "75%",
-                                margin: "20px",
-                              }}
-                            />
-                            <TextField
-                              type="number"
-                              name="qty"
-                              variant="outlined"
-                              label="Quantity"
-                              style={{
-                                width: "75%",
-                                margin: "20px",
-                              }}
-                            />
-                            <TextField
-                              type="hidden"
-                              name="product_id"
-                              value={this.state.inputObj.product_id}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-                <form
-                  className="card"
-                  style={{ marginTop: "20px" }}
-                  onSubmit={this.handleSale}
-                >
-                  <div className="card-header card-header-payments">
-                    <h3 className="class_payment_header">Payment</h3>
-                    <div className="">
-                      <Button type="submit" variant="contained" color="primary">
-                        Finish Sale
-                        <span style={{ fontSize: "15px", marginLeft: "10px" }}>
-                          <i className="las la-angle-double-right"></i>
-                        </span>
-                      </Button>
-                    </div>
-                  </div>
-                  <Finish t={this.getTotals()} />
-                </form>
-              </div>
               <div className="card">
                 <div className="card-header">
                   <h3>Orders List</h3>
@@ -302,7 +204,7 @@ class NewSale extends Component {
                     <tbody>
                       {this.state.formData.length === 0 ? (
                         <tr>
-                          <td>No Product Added</td>
+                          <td>No Student Attended</td>
                         </tr>
                       ) : (
                         this.state.formData.map((v, i) => {
@@ -335,17 +237,165 @@ class NewSale extends Component {
                         })
                       )}
                     </tbody>
-                    <thead>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>Total</td>
-                        <td>{this.getTotals()}</td>
-                      </tr>
-                    </thead>
                   </table>
                 </div>
+              </div>
+              <div className="projects">
+                <form
+                  className="card"
+                  autoComplete="off"
+                  onSubmit={this.handleSubmit}
+                >
+                  <div className="card-header card-header-payments">
+                    <h3 className="class_payment_header">New Session</h3>
+                    <div className="">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        style={{ marginRight: "20px" }}
+                        onClick={() => {
+                          this.setState({
+                            ...this.state,
+                            form_visible: !this.state.form_visible,
+                          });
+                        }}
+                      >
+                        <span
+                          style={{ fontSize: "17.5px", marginRight: "10px" }}
+                        >
+                          <i className="las la-plus-circle"></i>
+                        </span>
+                        {this.state.form_visible ? "Hide" : "Show"}
+                      </Button>
+                      <Button
+                        type="submit"
+                        aria-describedby={this.id}
+                        variant="contained"
+                        color="primary"
+                      >
+                        <span
+                          style={{ fontSize: "17.5px", marginRight: "10px" }}
+                        >
+                          <i className="las la-plus-circle"></i>
+                        </span>
+                        Start
+                      </Button>
+                    </div>
+                  </div>
+                  <div
+                    className="card-body"
+                    style={
+                      this.state.form_visible
+                        ? { display: "block" }
+                        : { display: "none" }
+                    }
+                  >
+                    <div>
+                      <div className="inputCtr">
+                        <h4>Session Details</h4>
+                        <div className="inputs_ctr">
+                          <div className="inpts_on_left">
+                            <Autocomplete
+                              id="combo-box-demo"
+                              options={this.state.courses}
+                              getOptionLabel={(option) => option.course_name}
+                              style={{
+                                width: "75%",
+                                margin: "20px",
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Select Course"
+                                  name="course"
+                                  variant="outlined"
+                                />
+                              )}
+                            />
+                            <TextField
+                              name="session_name"
+                              variant="outlined"
+                              value={this.state.inputObj.unit_price}
+                              label="Session Name(Topic)"
+                              style={{
+                                width: "75%",
+                                margin: "20px",
+                              }}
+                            />
+                          </div>
+                          <div className="inpts_on_right">
+                            <TextField
+                              type="time"
+                              name="start_time"
+                              variant="outlined"
+                              helperText="Starts At"
+                              style={{
+                                width: "75%",
+                                margin: "20px",
+                              }}
+                            />
+                            <TextField
+                              type="time"
+                              name="end_time"
+                              variant="outlined"
+                              helperText="Ends At"
+                              style={{
+                                width: "75%",
+                                margin: "20px",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                <form
+                  className="card"
+                  style={{ marginTop: "20px" }}
+                  onSubmit={this.handleSale}
+                >
+                  <div className="card-header card-header-payments">
+                    <h3 className="class_payment_header">Active Session</h3>
+                    <div className="">
+                      <Button type="submit" variant="contained" color="primary">
+                        End Class
+                        <span style={{ fontSize: "15px", marginLeft: "10px" }}>
+                          <i className="las la-angle-double-right"></i>
+                        </span>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="_finish_purchase_ctr">
+                    <TextField
+                      name="student_number"
+                      variant="outlined"
+                      label="Students In Class"
+                      style={{
+                        width: "75%",
+                        margin: "20px",
+                      }}
+                    />
+                    <TextField
+                      name="session_name"
+                      variant="outlined"
+                      label="Session"
+                      style={{
+                        width: "75%",
+                        margin: "20px",
+                      }}
+                    />
+                    <TextField
+                      name="session_time"
+                      variant="outlined"
+                      label="Session Time"
+                      style={{
+                        width: "75%",
+                        margin: "20px",
+                      }}
+                    />
+                  </div>
+                </form>
               </div>
             </div>
           </main>

@@ -113,7 +113,7 @@ router.post("/classes/new", (req, res) => {
 router.get("/classes", (req, res) => {
   conn.query("SELECT * FROM classes_table", (error, result) => {
     if (error) {
-      res.send({ status: false, data: "An error In Service" });
+      res.send([]);
       throw error;
     } else {
       res.send(result);

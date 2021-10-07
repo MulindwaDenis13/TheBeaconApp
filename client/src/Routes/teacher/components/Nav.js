@@ -38,14 +38,14 @@ class Nav extends Component {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/new-sale">
+                  <Link to="/session">
                     <span
                       className={`${
-                        this.props.active === "sale" ? "active" : ""
+                        this.props.active === "session" ? "active" : ""
                       } _a_replaced`}
                     >
                       <span className="las la-user-plus"></span>
-                      <span>New Sale</span>
+                      <span>Session</span>
                     </span>
                   </Link>
                 </li>

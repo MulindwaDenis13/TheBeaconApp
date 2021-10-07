@@ -4,6 +4,7 @@ import Nav from "./components/Nav";
 import Header from "./components/Header";
 import UsersApi from "../../api/users";
 import { Link } from "react-router-dom";
+import user from "../../app_config";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ class Dashboard extends Component {
       AnchorEl: null,
       AnchorElDrugs: null,
       classes: [],
-      purchase_number: "...",
+      courses: [],
       sales_number: "...",
     };
     this.classes();
@@ -25,10 +26,11 @@ class Dashboard extends Component {
     }
   }
 
-  async purchases() {
-    const res = (await UsersApi.data("/user/all/purchases")) || [];
+  async courses() {
+    const res =
+      (await UsersApi.data(`/user/teacher/courses/${user.user.user_id}`)) || [];
     if (res) {
-      this.setState({ ...this.state, purchase_number: res.length });
+      this.setState({ ...this.state, courses: res === "Error" ? [] : res });
     }
   }
 
@@ -199,27 +201,31 @@ class Dashboard extends Component {
                     <table width="100%">
                       <thead>
                         <tr>
-                          <td>Product No.</td>
                           <td>Name</td>
-                          <td>ExpiryDate</td>
+                          <td>Class</td>
+                          <td></td>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>12/02/2012</td>
-                          <td>Panadol</td>
-                          <td>23/09/2020</td>
-                        </tr>
-                        <tr>
-                          <td>12/07/2019</td>
-                          <td>Action</td>
-                          <td>23/07/2019</td>
-                        </tr>
-                        <tr>
-                          <td>11/09/2015</td>
-                          <td>Coaterm</td>
-                          <td>25/05/2022</td>
-                        </tr>
+                        {this.state.courses.length === 0 ? (
+                          <tr>
+                            <td>No Courses Available To Display...</td>
+                          </tr>
+                        ) : (
+                          this.state.classes.map((v, i) => {
+                            return (
+                              <tr key={i}>
+                                <td className="name_cell">{v.course_name}</td>
+                                <td>{v.class_name}</td>
+                                <td>
+                                  <Button variant="contained" color="primary">
+                                    Details
+                                  </Button>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
                       </tbody>
                     </table>
                   </div>
